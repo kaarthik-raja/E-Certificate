@@ -3,12 +3,12 @@
     var bodyParser = require('body-parser');
     var multer = require('multer');
     var http = require('http');
-    var sys = require('sys');
+    // var sys = require('sys');
     var exec = require('child_process').exec;
     var util = require('util');
     var fs = require('fs');
-    // var api_key = '';
-    // var sendgrid = require('sendgrid')(api_key);
+    var api_key = '';
+    var sendgrid = require('sendgrid')(api_key);
     // var nodemailer = require('nodemailer');
     var sleep = require('sleep');
 
@@ -45,7 +45,18 @@
 
     function pdfConvert(i){
         console.log(i);
-        var dummyContent = '<!DOCTYPE html><html><head><title></title></head><body><img style="width:100%" src="../uploads/participation.jpg"><h3 style="position:absolute;top:42.5%;left:35%">' + data[i].Name + '</h3><h3 style="position:absolute;top:47%;left:32%">' + data[i].SubDept + '</h3><h3 style="position:absolute;top:51.5%;left:45%">' + data[i].Dept + '</h3></body></html>';
+        
+        // var dummyContent = '<!DOCTYPE html><html><head><title></title></head><body><img style="width:100%" src="../uploads/participation.jpg"><h3 style="position:absolute;top:42.5%;text-align:center;">' + data[i].Name + '</h3><h3 style="position:absolute;top:47%;text-align:center;">' + data[i].SubDept + '</h3><h3 style="position:absolute;top:51.5%;text-align:center;">' + data[i].Dept + '</h3></body></html>';
+        var dummyContent ='<!DOCTYPE html><html><head></head>'+
+			'<body><img style="width:100%" src="../uploads/participation.jpg">'+
+			'<div style="padding-left: 15%;">'+
+			'<h3 style="margin-top:-100%;text-align: center;"></h3>'+
+			'<h3 style="margin-top:46.5%;text-align: center;">' + data[i].Name.toUpperCase() +'</h3>'+
+			'<h3 style="margin-top:5%;text-align: center;">' + data[i].Position + '</h3>'+
+			'<h3 style="margin-top:1%;text-align: center;">' + data[i].SubDept[0].toUpperCase() + data[i].SubDept.slice(1) + '</h3>'+
+			'<h3 style="margin-top:5%;text-align: center;">' + data[i].Dept+ '</h3>'+
+			'</div>'+
+			'</body></html>'
         // var dummyContent = '<!DOCTYPE html><html><head><title></title></head><body><img style="width:100%" src="../uploads/winnerscertificate.jpg"><h3 style="position:absolute;top:42.5%;left:35%">Howard</h3><h3 style="position:absolute;top:47%;left:32%">IIT Madras</h3></body></html>';
         var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
         var htmlFileName = "htmls/"+ modifiedFirstName +".html", pdfFileName = "pdfs/"+ modifiedFirstName +".pdf";
@@ -60,7 +71,7 @@
                 if(err) { throw err; }
                 util.log(stderr);
                 console.log("Came 2" + i);
-                // sendEmail(i);
+                sendEmail(i);
             });
             
         });
