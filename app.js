@@ -8,7 +8,6 @@
     var util = require('util');
     var fs = require('fs');
     var api_key = '';
-    api_key= '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';
     var sendgrid = require('sendgrid')(api_key);
     // var nodemailer = require('nodemailer');
     var sleep = require('sleep');
