@@ -7,10 +7,11 @@
     var exec = require('child_process').exec;
     var util = require('util');
     var fs = require('fs');
-    var api_key = '';
+	var api_key = require('./Zapi.js').apikey;
+
     var sendgrid = require('sendgrid')(api_key);
     // var nodemailer = require('nodemailer');
-    var sleep = require('sleep');
+    // var sleep = require('sleep');
 
     var contents = fs.readFileSync("./uploads/output.json");
     var data = JSON.parse(contents);
@@ -18,7 +19,7 @@
 
     function sendEmail(i){
         // Convert HTML to PDF with wkhtmltopdf
-        console.log("Come" + i);
+        // console.log("Come" + i);
         var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
         // var modifiedFirstName = data[i].Name;
         var destinationEmail = data[i].Email;
@@ -44,17 +45,18 @@
 
 
     function pdfConvert(i){
-        console.log(i);
+        // console.log(i);
         
         // var dummyContent = '<!DOCTYPE html><html><head><title></title></head><body><img style="width:100%" src="../uploads/participation.jpg"><h3 style="position:absolute;top:42.5%;text-align:center;">' + data[i].Name + '</h3><h3 style="position:absolute;top:47%;text-align:center;">' + data[i].SubDept + '</h3><h3 style="position:absolute;top:51.5%;text-align:center;">' + data[i].Dept + '</h3></body></html>';
         var dummyContent ='<!DOCTYPE html><html><head></head>'+
 			'<body><img style="width:95% ;" src="../uploads/participation.jpg">'+
+			'<style>  @font-face {font-family: Myfont;  src: url("./OpenSans-SemiboldItalic.ttf");} h2{ text-align: center;color: #053565;font-size:30px;font-family:Myfont;}</style>' +
 			'<div style="padding-left: 10%;">'+
 			'<h2 style="margin-top:-100%;text-align: center;"></h2>'+
-			'<h2 style="margin-top:52%;text-align: center;">' + data[i].Name.toUpperCase() +'</h2>'+
-			'<h2 style="margin-top:5%;text-align: center;">' + data[i].Position + '</h2>'+
-			'<h2 style="margin-top:2%;text-align: center;">' + data[i].SubDept[0].toUpperCase() + data[i].SubDept.slice(1) + '</h2>'+
-			'<h2 style="margin-top:4.5%;text-align: center;">' + data[i].Dept+ '</h2>'+
+			'<h2 style="margin-top:51.5%;">' + data[i].Name +'</h2>'+
+			'<h2 style="margin-top:4%;">' + data[i].Position + '</h2>'+
+			'<h2 style="margin-top:-1.5%;">' + data[i].SubDept[0].toUpperCase() + data[i].SubDept.slice(1) + '</h2>'+
+			'<h2 style="margin-top:3.5%;">' + data[i].Dept+ '</h2>'+
 			'</div>'+
 			'</body></html>'
         // var dummyContent = '<!DOCTYPE html><html><head><title></title></head><body><img style="width:100%" src="../uploads/winnerscertificate.jpg"><h3 style="position:absolute;top:42.5%;left:35%">Howard</h3><h3 style="position:absolute;top:47%;left:32%">IIT Madras</h3></body></html>';
@@ -63,22 +65,22 @@
     
         // Save to HTML file
         fs.writeFile(htmlFileName, dummyContent, function(err) {
-            console.log("Came" + i);
+            // console.log("Came" + i);
             if(err) { throw err; }
             util.log("file saved to site.html");
 
-            var child = exec("wkhtmltopdf -O landscape --disable-smart-shrinking " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
+            var child = exec("wkhtmltopdf -O landscape " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
                 if(err) { throw err; }
                 util.log(stderr);
-                console.log("Came 2" + i);
-                sendEmail(i);
+                // console.log("Came 2" + i);
+                // sendEmail(i);
             });
             
         });
     
         
 
-        console.log('Rendered to ' + htmlFileName + ' and ' + pdfFileName + '\n');
+        console.log('Rendered to ' + htmlFileName + ' and ' + pdfFileName);
     }
 
     for(var i=0; i<data.length; i++){
