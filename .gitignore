@@ -1,2 +1,7 @@
 ./pdfs
 ./Zapi.js
+./htmls/*.html
+./uploads/*.png
+./uploads/*.jpg
+./uploads/*.jpeg
+node_modules

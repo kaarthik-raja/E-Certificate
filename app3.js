@@ -23,7 +23,7 @@ function sendEmail(i){
     // var modifiedFirstName = data[i].Name;
     var destinationEmail = data[i].Email;
     var text_body = "Hello!\nGreetings from Shaastra.\n\n"+
-    "Thanks for participating in this year's Sampark. Hope you had a good experience. Your e-certificate"+
+    "Thanks for volunteering and being a part of Shaastra organizing team. Hope you had a good experience. Your e-certificate"+
     "has been attached herewith.\n\nHoping you see you in IIT Madras for Shaastra 2018!\n\n"+
     "Thanks,\nTeam Shaastra.\n\n\n\n";
 
@@ -33,7 +33,7 @@ function sendEmail(i){
                 to: destinationEmail,
                 from: 'webops@shaastra.org',
                 fromname: 'Shaastra Outreach',
-                subject: 'E-certificate || Shaastra Sampark ',
+                subject: 'E-certificate || Shaastra Sampark',
                 text: text_body,
                 files: [{filename: 'e-certificate.pdf', content: data}]
             };
@@ -65,10 +65,8 @@ function pdfConvert(i){
 
     var dummyContent = '<!DOCTYPE html><html><head></head>'+
         '<style>  @font-face {font-family: Myfont;  src: url("./OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; margin-left: 0%; color: #053565; font-size: 30px; font-family: Myfont;}</style>'+
-        '<body><img style="width:95% ;" src="../uploads/workshop.jpg">'+
-        '<h2 style="top: 37%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
-        '<h2 style="top: 44%; margin-left: 45%; width: 20%;">'+data[i].Workshop+'</h2>'+
-        '<h2 style="top: 59%; margin-left: 57%; width: 20%;">'+data[i].City+'</h2>'+
+        '<body><img style="width:95% ;" src="../uploads/volunteer.jpg">'+
+        '<h2 style="top: 39.5%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
         '</div></body></html>'
 
 
@@ -84,7 +82,7 @@ function pdfConvert(i){
         var child = exec("wkhtmltopdf -O landscape " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
             if(err) { throw err; }
             util.log(stderr);
-            sendEmail(i);
+            // sendEmail(i);
         });    
     });
     console.log('Rendered to ' + htmlFileName + ' and ' + pdfFileName);

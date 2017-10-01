@@ -13,3 +13,6 @@
 	<li>Your excel file should only be in .xls format</li>
 	<li>Your excel file should contain name, lastName, email, college and event columns</li>
 </ul>
+
+##Minor Correction
+After <kbd>npm install</kbd>, go to <kbd>/node_modules/xlsjs/dist/cpexcel.ls:line 904</kbd> and comment it. Only then, running <kbd>node initial.js</kbd> works.
