@@ -12,7 +12,7 @@ var sendgrid = require('sendgrid')("INSERT API KEY HERE");
 // var nodemailer = require('nodemailer');
 // var sleep = require('sleep');
 
-var contents = fs.readFileSync("./uploads/output.json");
+var contents = fs.readFileSync("./uploads/input.json");
 var data = JSON.parse(contents);
 
 
@@ -22,10 +22,10 @@ function sendEmail(i){
     var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
     // var modifiedFirstName = data[i].Name;
     var destinationEmail = data[i].Email;
-    var text_body = "Hello!\nGreetings from Shaastra.\n\n"+
-    "Thanks for volunteering and being a part of Shaastra organizing team. Hope you had a good experience. Your e-certificate"+
-    "has been attached herewith.\n\nHoping you see you in IIT Madras for Shaastra 2018!\n\n"+
-    "Thanks,\nTeam Shaastra.\n\n\n\n";
+    var text_body = "<html><body>Hello,<br>Greetings from Shaastra, IIT Madras!<br><br>"+
+    "The Shaastra team appreciates your efforts for conducting a successful and well organized Sampark in " + data[i].City +
+    ". Please find attached a certificate of appreciation for your contributions towards Sampark."+
+    '<br><br>Thanks,<br>Team Shaastra.<br>Follow us on <a href="https://www.facebook.com/Shaastra">Facebook</a> for more updates. <br><br><br><br></body></html>';
 
     fs.readFile('pdfs/'+ modifiedFirstName +'.pdf',function(err,data){
             console.log(destinationEmail);
@@ -33,8 +33,8 @@ function sendEmail(i){
                 to: destinationEmail,
                 from: 'webops@shaastra.org',
                 fromname: 'Shaastra Outreach',
-                subject: 'E-certificate || Shaastra Sampark',
-                text: text_body,
+                subject: 'E-certificate || Shaastra Sampark - ' + data[i].Name,
+                html: text_body,
                 files: [{filename: 'e-certificate.pdf', content: data}]
             };
             var email = new sendgrid.Email(params);
@@ -82,7 +82,7 @@ function pdfConvert(i){
         var child = exec("wkhtmltopdf -O landscape " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
             if(err) { throw err; }
             util.log(stderr);
-            // sendEmail(i);
+            sendEmail(i);
         });    
     });
     console.log('Rendered to ' + htmlFileName + ' and ' + pdfFileName);

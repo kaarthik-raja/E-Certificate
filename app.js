@@ -12,7 +12,7 @@ var sendgrid = require('sendgrid')("INSERT API KEY HERE");
 // var nodemailer = require('nodemailer');
 // var sleep = require('sleep');
 
-var contents = fs.readFileSync("./uploads/output.json");
+var contents = fs.readFileSync("./uploads/input.json");
 var data = JSON.parse(contents);
 
 
@@ -22,10 +22,12 @@ function sendEmail(i){
     var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
     // var modifiedFirstName = data[i].Name;
     var destinationEmail = data[i].Email;
-    var text_body = "Hello!\nGreetings from Shaastra.\n\n"+
-    "Thanks for participating in this year's Sampark. Hope you had a good experience. Your e-certificate"+
-    "has been attached herewith.\n\nHoping you see you in IIT Madras for Shaastra 2018!\n\n"+
-    "Thanks,\nTeam Shaastra.\n\n\n\n";
+    var text_body = "<html><body> Hello " + data[i].Name + " ,<br>Greetings from Shaastra, IIT Madras.<br><br>"+
+    "Thanks for attending " + data[i].Workshop + " workshop in Sampark, " + data[i].City + ". Hope that you gained a lot from the experience and will learn further into the topic."+ 
+    'You can find the presentations used during the workshop <a href="https://drive.google.com/open?id=0B_EwaAVQesWkNGVSSmdDb29pYVU">here</a>. ' +
+    "<br><br>Also find attached a certificate for successful completion of the workshop by you."+
+    "<br><br>Hoping you see you in IIT Madras for Shaastra 2018!<br><br>"+
+    'Regards,<br>Team Shaastra.<br>Follow us on <a href="https://www.facebook.com/Shaastra">Facebook</a> for more updates. <br><br><br><br></body></html>';
 
     fs.readFile('pdfs/'+ modifiedFirstName +'.pdf',function(err,data){
             console.log(destinationEmail);
@@ -33,8 +35,8 @@ function sendEmail(i){
                 to: destinationEmail,
                 from: 'webops@shaastra.org',
                 fromname: 'Shaastra Outreach',
-                subject: 'E-certificate || Shaastra Sampark ',
-                text: text_body,
+                subject: 'E-Certificate || Shaastra Sampark ',
+                html: text_body,
                 files: [{filename: 'e-certificate.pdf', content: data}]
             };
             var email = new sendgrid.Email(params);
@@ -66,9 +68,9 @@ function pdfConvert(i){
     var dummyContent = '<!DOCTYPE html><html><head></head>'+
         '<style>  @font-face {font-family: Myfont;  src: url("./OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; margin-left: 0%; color: #053565; font-size: 30px; font-family: Myfont;}</style>'+
         '<body><img style="width:95% ;" src="../uploads/workshop.jpg">'+
-        '<h2 style="top: 37%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
-        '<h2 style="top: 44%; margin-left: 45%; width: 20%;">'+data[i].Workshop+'</h2>'+
-        '<h2 style="top: 59%; margin-left: 57%; width: 20%;">'+data[i].City+'</h2>'+
+        '<h2 style="top: 38.5%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
+        '<h2 style="top: 44.5%; margin-left: 41.5%; width: 40%;">'+data[i].Workshop+'</h2>'+
+        '<h2 style="top: 60%; margin-left: 55%; width: 25%;">'+data[i].City+'</h2>'+
         '</div></body></html>'
 
 
@@ -79,8 +81,7 @@ function pdfConvert(i){
     fs.writeFile(htmlFileName, dummyContent, function(err) {
         // console.log("Came" + i);
         if(err) { throw err; }
-        util.log("file saved to site.html");
-
+        
         var child = exec("wkhtmltopdf -O landscape " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
             if(err) { throw err; }
             util.log(stderr);
