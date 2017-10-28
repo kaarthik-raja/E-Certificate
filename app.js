@@ -2,19 +2,24 @@ var express = require('express');
 var app = express(); 
 var bodyParser = require('body-parser');
 var multer = require('multer');
-var http = require('http');
+// var http = require('http');
+var pdf = require('html-pdf');
 // var sys = require('sys');
+var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
 var util = require('util');
 var fs = require('fs');
-
-var sendgrid = require('sendgrid')("INSERT API KEY HERE");
+var api="";
+var sendgrid = require('sendgrid')("ds");
 // var nodemailer = require('nodemailer');
 // var sleep = require('sleep');
 
 var contents = fs.readFileSync("./uploads/input.json");
 var data = JSON.parse(contents);
-
+var options={
+  "format": "A4",
+  "orientation": "landscape"
+};
 
 function sendEmail(i){
     // Convert HTML to PDF with wkhtmltopdf
@@ -22,27 +27,24 @@ function sendEmail(i){
     var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
     // var modifiedFirstName = data[i].Name;
     var destinationEmail = data[i].Email;
-    var text_body = "<html><body> Hello " + data[i].Name + " ,<br>Greetings from Shaastra, IIT Madras.<br><br>"+
-    "Thanks for attending " + data[i].Workshop + " workshop in Sampark, " + data[i].City + ". Hope that you gained a lot from the experience and will learn further into the topic."+ 
-    'You can find the presentations used during the workshop <a href="https://drive.google.com/open?id=0B_EwaAVQesWkNGVSSmdDb29pYVU">here</a>. ' +
-    "<br><br>Also find attached a certificate for successful completion of the workshop by you."+
-    "<br><br>Hoping you see you in IIT Madras for Shaastra 2018!<br><br>"+
-    'Regards,<br>Team Shaastra.<br>Follow us on <a href="https://www.facebook.com/Shaastra">Facebook</a> for more updates. <br><br><br><br></body></html>';
+    var text_body = "<html><body>Hello " + data[i].Name + "!<br>Greetings from Shaastra.<br><br>"+
+    "Thanks for participating in this year's Sampark. Hope you had a good experience. Your e-certificate "+
+    "has been attached herewith.<br><br>Hoping you see you in IIT Madras for Shaastra 2018!<br><br>"+
+    'Thanks,<br><b>Team Shaastra</b>.<br><br>Follow us on <a href="https://www.facebook.com/Shaastra">Facebook</a> for more updates.</body></html>';
 
     fs.readFile('pdfs/'+ modifiedFirstName +'.pdf',function(err,data){
-            console.log(destinationEmail);
+            console.log("mail Sent to ",destinationEmail);
             var params = {
                 to: destinationEmail,
                 from: 'webops@shaastra.org',
                 fromname: 'Shaastra Outreach',
-                subject: 'E-Certificate || Shaastra Sampark ',
-                html: text_body,
+                subject: 'E-certificate || Shaastra Sampark ',
+                html : text_body,
                 files: [{filename: 'e-certificate.pdf', content: data}]
             };
             var email = new sendgrid.Email(params);
             sendgrid.send(email, function (err, json) {
-                console.log('Error sending mail - ', err);
-                console.log('Success sending mail - ', json);
+                if(err)console.log("error mailing @ ",destinationEmail);
             });
         });
 
@@ -66,31 +68,38 @@ function pdfConvert(i){
 
 
     var dummyContent = '<!DOCTYPE html><html><head></head>'+
-        '<style>  @font-face {font-family: Myfont;  src: url("./OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; margin-left: 0%; color: #053565; font-size: 30px; font-family: Myfont;}</style>'+
+        '<style>  @font-face {font-family: Myfont;  src: url("../OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; margin-left: 0%; color: #053565; font-size: 24px; font-family: Myfont;}</style>'+
         '<body><img style="width:95% ;" src="../uploads/workshop.jpg">'+
-        '<h2 style="top: 38.5%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
-        '<h2 style="top: 44.5%; margin-left: 41.5%; width: 40%;">'+data[i].Workshop+'</h2>'+
-        '<h2 style="top: 60%; margin-left: 55%; width: 25%;">'+data[i].City+'</h2>'+
+        '<h2 style="top: 38%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
+        '<h2 style="top: 44%; margin-left: 40%; width: 50%;">'+data[i].Workshop+'</h2>'+
+        '<h2 style="top: 59%; margin-left: 57%; width: 20%;">'+data[i].City+'</h2>'+
         '</div></body></html>'
 
 
     var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
-    var htmlFileName = "htmls/"+ modifiedFirstName +".html", pdfFileName = "pdfs/"+ modifiedFirstName +".pdf";
-
+    var htmlFileName = "./htmls/" + modifiedFirstName +".html", pdfFileName = "./pdfs/"+ modifiedFirstName +".pdf";
+	var htmlcreateName =  __dirname + "/htmls/" + modifiedFirstName +".html"
     // Save to HTML file
-    fs.writeFile(htmlFileName, dummyContent, function(err) {
-        // console.log("Came" + i);
+    fs.writeFile(htmlcreateName, dummyContent, function(err) {
+        console.log("Came" + i);
         if(err) { throw err; }
-        
-        var child = exec("wkhtmltopdf -O landscape " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
+        util.log("file saved to site.html");
+
+        // var child = exec("firefox -print " + htmlFileName + " -printmode pdf " +  pdfFileName, function(err, stdout, stderr) {
+        var child = exec("phantomjs rasterize.js " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
             if(err) { throw err; }
             util.log(stderr);
-            sendEmail(i);
+            console.log("came to send mail");
+            // sendEmail(i);
         });    
     });
-    console.log('Rendered to ' + htmlFileName + ' and ' + pdfFileName);
+    // pdf.create(dummyContent).toFile(pdfFileName, function(err, res){
+    //   console.log("created ",res.filename);
+    // });
+    // console.log('Rendered to ' + htmlFileName + ' and ' + pdfFileName);
 }
-
+console.log("data ",data);
+console.log("Path\n\n",__dirname);
 for(var i=0; i<data.length; i++){
     pdfConvert(i);
 }

@@ -1,7 +1,7 @@
 var node_xj = require("xls-to-json");
 
 node_xj({
-        input: "./uploads/input.xls",
+        input: "./uploads/input1.xls",
         output: "./uploads/input.json"
     }, function(err, result) {
         if(err) {

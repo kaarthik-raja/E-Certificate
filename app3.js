@@ -8,7 +8,7 @@ var exec = require('child_process').exec;
 var util = require('util');
 var fs = require('fs');
 
-var sendgrid = require('sendgrid')("INSERT API KEY HERE");
+var sendgrid = require('sendgrid')("Insert Api here");
 // var nodemailer = require('nodemailer');
 // var sleep = require('sleep');
 
@@ -23,24 +23,23 @@ function sendEmail(i){
     // var modifiedFirstName = data[i].Name;
     var destinationEmail = data[i].Email;
     var text_body = "<html><body>Hello,<br>Greetings from Shaastra, IIT Madras!<br><br>"+
-    "The Shaastra team appreciates your efforts for conducting a successful and well organized Sampark in " + data[i].City +
-    ". Please find attached a certificate of appreciation for your contributions towards Sampark."+
-    '<br><br>Thanks,<br>Team Shaastra.<br>Follow us on <a href="https://www.facebook.com/Shaastra">Facebook</a> for more updates. <br><br><br><br></body></html>';
-
-    fs.readFile('pdfs/'+ modifiedFirstName +'.pdf',function(err,data){
-            console.log(destinationEmail);
+    "The Shaastra team appreciates your efforts for conducting a successful and well organized Sampark. "  +
+    " Please find attached a certificate of appreciation for your contributions towards Sampark."+
+    '<br><br>Thanks,<br>Team Shaastra. <br> Follow us on <a href="https://www.facebook.com/Shaastra">Facebook</a> for more updates. <br><br><br><br></body></html>';
+    var subject='E-certificate || Shaastra Sampark - ' + data[i].Name
+    fs.readFile('pdfs/'+ modifiedFirstName +'.pdf',function(err,datap){
+            // console.log(destinationEmail);
             var params = {
                 to: destinationEmail,
                 from: 'webops@shaastra.org',
                 fromname: 'Shaastra Outreach',
-                subject: 'E-certificate || Shaastra Sampark - ' + data[i].Name,
+                subject: subject,
                 html: text_body,
-                files: [{filename: 'e-certificate.pdf', content: data}]
+                files: [{filename: 'e-certificate.pdf', content: datap}]
             };
             var email = new sendgrid.Email(params);
             sendgrid.send(email, function (err, json) {
-                console.log('Error sending mail - ', err);
-                console.log('Success sending mail - ', json);
+                if(err)console.log("error mailing ", data[i].Name ," @ ", data[i].Email);
             });
         });
 
