@@ -17,9 +17,12 @@
     "body-parser": "1.14.1",
     "express": "4.13.3",
     "fs": "0.0.2",
+    "html-pdf": "^2.2.0",
     "multer": "1.1.0",
     "sendgrid": "^2.0.0",
     "sleep": "^3.0.1",
+    "system": "^2.0.1",
+    "webpage": "^0.3.0",
     "xls-to-json": "^0.3.2"
   }
 }
