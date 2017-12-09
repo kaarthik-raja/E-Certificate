@@ -8,7 +8,7 @@ var exec = require('child_process').exec;
 var util = require('util');
 var fs = require('fs');
 
-var sendgrid = require('sendgrid')("Insert Api here");
+var sendgrid = require('sendgrid')("INSERT API KEY HERE");
 // var nodemailer = require('nodemailer');
 // var sleep = require('sleep');
 
@@ -63,22 +63,22 @@ function pdfConvert(i){
 
 
     var dummyContent = '<!DOCTYPE html><html><head></head>'+
-        '<style>  @font-face {font-family: Myfont;  src: url("./OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; margin-left: 0%; color: #053565; font-size: 30px; font-family: Myfont;}</style>'+
+        '<style>  @font-face {font-family: Myfont;  src: url("../OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; margin-left: 0%; color: #053565; font-size: 24px; font-family: Myfont;}</style>'+
         '<body><img style="width:95% ;" src="../uploads/volunteer.jpg">'+
-        '<h2 style="top: 39.5%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
-        '</div></body></html>'
+        '<h2 style="top: 39%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
+        '</div></body></html>';
 
 
     var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
-    var htmlFileName = "htmls/"+ modifiedFirstName +".html", pdfFileName = "pdfs/"+ modifiedFirstName +".pdf";
-
+    var htmlFileName = "./htmls/" + modifiedFirstName +".html", pdfFileName = "./pdfs/"+ modifiedFirstName +".pdf";
+    var htmlcreateName =  __dirname + "/htmls/" + modifiedFirstName +".html";
     // Save to HTML file
-    fs.writeFile(htmlFileName, dummyContent, function(err) {
+    fs.writeFile(htmlcreateName, dummyContent, function(err) {
         // console.log("Came" + i);
         if(err) { throw err; }
         util.log("file saved to site.html");
 
-        var child = exec("wkhtmltopdf -O landscape " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
+        var child = exec("phantomjs rasterize.js " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
             if(err) { throw err; }
             util.log(stderr);
             sendEmail(i);

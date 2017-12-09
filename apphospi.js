@@ -67,13 +67,27 @@ function pdfConvert(i){
 
 
     var dummyContent = '<!DOCTYPE html><html><head></head>'+
-        '<style>  @font-face {font-family: Myfont;  src: url("../OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; margin-left: 0%; color: #053565; font-size: 24px; font-family: Myfont;}</style>'+
-        '<body><img style="width:95% ;" src="../uploads/workshop.jpg">'+
-        '<h2 style="top: 38%; margin-left: 34%; width: 36%;">'+data[i].Name+'</h2>'+
-        '<h2 style="top: 44%; margin-left: 38%; width: 50%;">'+data[i].Workshop+'</h2>'+
-        '<h2 style="top: 59%; margin-left: 57%; width: 20%;">'+data[i].City+'</h2>'+
+        '<style>  @font-face {font-family: Myfont;  src: url("../OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; color: #053565; font-size: 24px; font-family: Myfont;}</style>'+
+        '<body><img style="width:83% ; margin-left:8%;" src="../uploads/Accomodation.jpg">'+
+        '<img style="width:13% ;position:absolute; top: 4%;margin-left:-17.5%;" src="../QRCodes/Q1.svg">'+
+        '<h2 style="top: 12.5%; margin-left: 23%;">'+data[i].Date+'</h2>'+
+        '<h2 style="top: 18%; margin-left: 40%; width:30%;text-align:left;">'+data[i].Name+'</h2>'+
+        '<h2 style="top: 22.5%; margin-left: 40%;">'+data[i].ShaastraID+'</h2>'+
+        '<h2 style="top: 27%; margin-left: 40%;">'+data[i].MobileNo+'</h2>'+
+        '<h2 style="top: 31%; margin-left: 40%;">'+data[i].Hostel+'</h2>'+
+        '<h2 style="top: 35%; margin-left: 40%;">'+data[i].RoomNo+'</h2>'+
+        '<h2 style="top: 42.5%; margin-left: 33%;">'+data[i].CautionDeposit+'</h2>'+
+        '<h2 style="top: 48.5%; margin-left: 33%;">'+data[i].AccomodationCharge+'</h2>'+
+        '<h2 style="top: 54.5%; margin-left: 33%;">'+data[i].TotalCost+'</h2>'+
+        // '<h2 style="top: 54.5%; margin-left: 38%;">'+data[i].Paid+'</h2>'+
+        '<h2 style="top: 65%; margin-left: 53%;">'+data[i].ACName+'</h2>'+
+        '<h2 style="top: 68%; margin-left: 53%;">'+data[i].ACNum+'</h2>'+
+        '<h2 style="top: 71.5%; margin-left: 53%;width:30%;text-align:left;">'+data[i].Bank+'</h2>'+
+        '<h2 style="top: 74.5%; margin-left: 53%;">'+data[i].IFSC+'</h2>'+
+        '<h2 style="top: 46.5%; margin-left: 77%;">'+'&#10004;'+'</h2>'+
+        '<h2 style="top: 51.5%; margin-left: 77%;">'+'&#10007;'+'</h2>'+
+        '<h2 style="top: 56.5%; margin-left: 77%;">'+'&#10007;'+'</h2>'+
         '</div></body></html>';
-
 
     var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
     var htmlFileName = "./htmls/" + modifiedFirstName +".html", pdfFileName = "./pdfs/"+ modifiedFirstName +".pdf";
@@ -88,8 +102,7 @@ function pdfConvert(i){
         var child = exec("phantomjs rasterize.js " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
             if(err) { throw err; }
             util.log(stderr);
-            console.log("came to send mail");
-            sendEmail(i);
+            // sendEmail(i);
         });    
     });
     // pdf.create(dummyContent).toFile(pdfFileName, function(err, res){

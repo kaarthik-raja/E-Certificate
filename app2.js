@@ -7,7 +7,7 @@
     var exec = require('child_process').exec;
     var util = require('util');
     var fs = require('fs');
-    var api_key = '';
+    var api_key = 'INSERT API KEY HERE';
     var sendgrid = require('sendgrid')(api_key);
     var nodemailer = require('nodemailer');
     var sleep = require('sleep');
