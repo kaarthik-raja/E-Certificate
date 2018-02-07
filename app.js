@@ -10,7 +10,7 @@ var exec = require('child_process').exec;
 var util = require('util');
 var fs = require('fs');
 // var api="";
-var sendgrid = require('sendgrid')("INSERT API KEY HERE");
+var sendgrid = require('sendgrid')();
 // var nodemailer = require('nodemailer');
 // var sleep = require('sleep');
 var mailsent=0;
@@ -20,6 +20,7 @@ var data = JSON.parse(contents);
 function sendEmail(i){
     // Convert HTML to PDF with wkhtmltopdf
     // console.log("Come" + i);
+
     var modifiedFirstName = data[i].Name.replace(/[^a-zA-Z0-9]/g, '');
     // var modifiedFirstName = data[i].Name;
     var destinationEmail = data[i].Email;
@@ -29,10 +30,9 @@ function sendEmail(i){
     'Thanks,<br><b>Team Shaastra</b>.<br><br>Follow us on <a href="https://www.facebook.com/Shaastra">Facebook</a> for more updates.</body></html>';
 
     fs.readFile('pdfs/'+ modifiedFirstName +'.pdf',function(err,data){
-            console.log("mail Sent to ",destinationEmail);
             var params = {
-                to: destinationEmail,
-                // to: 'attacktitan100@gmail.com',
+                // to: destinationEmail,
+                to: 'attacktitan100@gmail.com',
                 from: 'sampark@shaastra.org',
                 fromname: 'Shaastra Outreach',
                 subject: 'E-certificate || Shaastra Sampark ',
@@ -40,8 +40,13 @@ function sendEmail(i){
                 files: [{filename: 'e-certificate.pdf', content: data}]
             };
             var email = new sendgrid.Email(params);
+            console.log("mail function to ",destinationEmail);
+
             sendgrid.send(email, function (err, json) {
-                if(err)console.log("error mailing @ ",destinationEmail);
+                console.log("mail Sent to ",destinationEmail);
+
+                if(err){console.log("\nerror mailing @ ",destinationEmail  );}
+                if(i==0)console.log("err is ",err);
                 // mailsent+=1;
                 // console.log("mailsent:",mailsent);
             });
@@ -88,8 +93,8 @@ function pdfConvert(i){
         var child = exec("phantomjs rasterize.js " + htmlFileName + " " + pdfFileName, function(err, stdout, stderr) {
             if(err) { throw err; }
             util.log(stderr);
-            console.log("came to send mail");
-            sendEmail(i);
+            // console.log("came to send mail");
+            // sendEmail(i);
         });    
     });
     // pdf.create(dummyContent).toFile(pdfFileName, function(err, res){
@@ -100,6 +105,6 @@ function pdfConvert(i){
 // console.log("data ",data);
 console.log("Path\n\n",__dirname);
 for(var i=0; i<data.length; i++){
-// for(var i=0; i<10; i++){
+// for(var i=0; i<1; i++){
     pdfConvert(i);
 }

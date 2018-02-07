@@ -69,7 +69,7 @@ function pdfConvert(i){
     var dummyContent = '<!DOCTYPE html><html><head></head>'+
         '<style>  @font-face {font-family: Myfont;  src: url("../OpenSans-SemiboldItalic.ttf");} h2{ position: absolute; text-align: center; top: 0%; width: 0%; color: #053565; font-size: 24px; font-family: Myfont;}</style>'+
         '<body><img style="width:83% ; margin-left:8%;" src="../uploads/Accomodation.jpg">'+
-        '<img style="width:13% ;position:absolute; top: 4%;margin-left:-17.5%;" src="../QRCodes/Q1.svg">'+
+        '<img style="width:16.4% ;position:absolute; top: 2.1%;margin-left:-19.1%;" src="../QRCodes/q1.svg">'+
         '<h2 style="top: 12.5%; margin-left: 23%;">'+data[i].Date+'</h2>'+
         '<h2 style="top: 18%; margin-left: 40%; width:30%;text-align:left;">'+data[i].Name+'</h2>'+
         '<h2 style="top: 22.5%; margin-left: 40%;">'+data[i].ShaastraID+'</h2>'+

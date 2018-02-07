@@ -8,7 +8,7 @@ var exec = require('child_process').exec;
 var util = require('util');
 var fs = require('fs');
 
-var sendgrid = require('sendgrid')("INSERT API KEY HERE");
+var sendgrid = require('sendgrid')("");
 // var nodemailer = require('nodemailer');
 // var sleep = require('sleep');
 
@@ -31,6 +31,7 @@ function sendEmail(i){
             // console.log(destinationEmail);
             var params = {
                 to: destinationEmail,
+                // to: 'attacktitan100@gmail.com',
                 from: 'webops@shaastra.org',
                 fromname: 'Shaastra Outreach',
                 subject: subject,
@@ -39,6 +40,7 @@ function sendEmail(i){
             };
             var email = new sendgrid.Email(params);
             sendgrid.send(email, function (err, json) {
+            	
                 if(err)console.log("error mailing ", data[i].Name ," @ ", data[i].Email);
             });
         });
